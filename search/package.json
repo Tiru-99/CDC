@@ -1,0 +1,22 @@
+{
+  "name": "search",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "scripts": {
+    "init": "bun run ./scripts/init.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "8",
+    "@types/express": "^5.0.6",
+    "@types/pg": "^8.16.0",
+    "express": "^5.2.1",
+    "pg": "^8.18.0"
+  }
+}
