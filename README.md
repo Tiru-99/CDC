@@ -47,3 +47,101 @@ This architecture is widely used in **high-scale backend systems**.
 - **Architecture:** Event-driven (CDC) 
 
 ---
+
+## 🧪 Steps
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Tiru-99/CDC
+cd Search
+```
+
+---
+
+### 2️⃣ Spin Up Infrastructure
+
+```bash
+sudo docker compose up -d
+```
+
+---
+
+### 3️⃣ Initialize Database Schema
+
+```bash
+bun run init
+```
+
+---
+
+### 4️⃣ Start CDC Producer
+
+```bash
+bun run index.ts
+```
+
+---
+
+### 5️⃣ Insert Sample Data
+
+```bash
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "iPhone 15",
+    "price": 799
+  }'
+```
+
+---
+
+### 6️⃣ Register Debezium Connector
+
+```bash
+curl -X POST http://localhost:8083/connectors \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "postgres-cdc",
+    "config": {
+      "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+      "tasks.max": "1",
+      "database.hostname": "postgres",
+      "database.port": "5432",
+      "database.user": "debezium",
+      "database.password": "debezium",
+      "database.dbname": "mydb",
+      "topic.prefix": "cdc",
+      "plugin.name": "pgoutput",
+      "slot.name": "debezium_slot",
+      "publication.autocreate.mode": "filtered",
+      "table.include.list": "public.products",
+      "snapshot.mode": "initial",
+      "key.converter.schemas.enable": "false",
+      "value.converter.schemas.enable": "false"
+    }
+  }'
+```
+
+---
+
+### 7️⃣ Start Consumer
+
+```bash
+cd consumer
+bun run index.ts
+```
+
+---
+
+### 8️⃣ Search Indexed Data
+
+```bash
+curl -X GET "http://localhost:9200/products/_search?q=name:iPhone"
+```
+---
+<div align="center">
+
+# All Set!!
+
+</div>
